@@ -3,24 +3,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
-import { isSetIterator } from "util/types";
+import { toast } from "sonner";
+import FormField from "./FormField";
+import { useRouter } from "next/navigation";
 
 // 1. Define the form schema
-const formSchema = z.object({
-  username: z.string().min(2).max(50),
-});
 const AuthFormSchema = (type: FormType) => {
   return z.object({
     name: type === "sign-up" ? z.string().min(3) : z.string().optional(),
@@ -29,17 +20,32 @@ const AuthFormSchema = (type: FormType) => {
   });
 };
 const AuthForm = ({ type }: { type: FormType }) => {
+  const router = useRouter();
   // 2. Initialize the form with useForm hook
+  const formSchema = AuthFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
+      email: "",
+      password: "",
     },
   });
 
   // 3. Define a submit handler
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    try {
+      if (type === "sign-up") {
+        toast.success("Account created succesfully.Please sign in ");
+        router.push("/sign-in");
+      } else {
+        toast.success("sign in seccessfull");
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(`There is error: ${error}`);
+    }
   }
   const isSignIn = type === "sign-in";
   // 4. Return the form component
@@ -57,9 +63,28 @@ const AuthForm = ({ type }: { type: FormType }) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6 mt-4 form w-full "
           >
-            {!isSignIn && <p>Name</p>}
-            <p>Email</p>
-            <p>Password</p>
+            {!isSignIn && (
+              <FormField
+                control={form.control}
+                name="name"
+                label="Name"
+                placeholder="Your Name"
+              />
+            )}
+            <FormField
+              control={form.control}
+              name="email"
+              label="Email"
+              placeholder="Your email address"
+              type="email"
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              label="Password"
+              placeholder="Your password"
+              type="password"
+            />
             <Button className="w-full rounded-3xl" type="submit">
               Create an Account
             </Button>
