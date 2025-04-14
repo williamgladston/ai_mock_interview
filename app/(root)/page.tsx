@@ -1,11 +1,43 @@
-import React from 'react'
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
 const page = () => {
   return (
-    <div>
-      
-    </div>
-  )
-}
+    <>
+      <section className="card-cta">
+        <div className="flex flex-col gap-6 maxx-w-lg">
+          <h2>Get Interview-Ready with AI-Powered Practice & Feedback</h2>
+          <p className="text-lg">
+            Practice on Interview question & get instant feedback
+          </p>
+          <Button asChild className="btn-primary max-sm:w-full">
+            <Link href="/interview">Start an Interview</Link>
+          </Button>
+        </div>
+        <Image
+          src="/robot.png"
+          alt="robo-dude"
+          width="400"
+          height="400"
+          className="max-sm:hidden"
+        />
 
-export default page
+      </section>
+      <section className="flex flex-col mt-8 gap-6">
+        <h2>Your Interview</h2>
+        <div className="interview-section"></div>
+<p> You havn&apos;t taken any interviews yet </p>
+      </section>
+
+      <section className="flex flex-col mt-8 gap-6">
+        <h2>Take an Interview</h2>
+        <div className="interview-section"></div>
+<p> There are no interviews available </p>
+      </section><a href="http://"></a>
+    </>
+  );
+};
+
+export default page;
